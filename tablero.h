@@ -5,5 +5,5 @@ typedef struct {
 } Tablero ;
 
 void inicializarTablero ( Tablero * tablero , int filas , int columnas);
-void mostrarTablero () ;
+void mostrarTablero (Tablero* tablero) ;
 void actualizarCelda ( Tablero * tablero , int x , int y , void *elemento );
