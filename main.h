@@ -11,7 +11,7 @@ typedef struct {
     Pedido * pedidos ;
     int turnos_restantes ;
     int dificultad ;
-    } Juego ;
+} Juego ;
 
 
 typedef struct {
