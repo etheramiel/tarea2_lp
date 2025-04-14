@@ -5,6 +5,9 @@
 #include "inventario.h"
 #include "acciones.h"
 
+typedef struct Pedido Pedido;
+
+
 typedef struct {
     Tablero * tablero ; // Puntero al struct Tablero
     Ingrediente ** inventario ;

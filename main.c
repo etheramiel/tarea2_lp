@@ -1,38 +1,13 @@
-#ifndef MAIN_C
-#define MAIN_C
-
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "acciones.h"
 #include "tablero.h"
 #include "inventario.h"
-#include "acciones.h"
 #include "main.h"
 
 
 //tablero.c
-void inicializarTablero ( Tablero* tablero , int filas , int columnas){
-    tablero->filas = filas;
-    tablero->columnas = columnas;
-
-    tablero->celdas = (void***)malloc(filas * sizeof(void***));
-
-    for(int i = 0; i < filas; i++){
-        tablero->celdas[i] = (void**)malloc(columnas * sizeof(void**));
-        
-        for(int j = 0; i<columnas; j++){
-            tablero->celdas[i][j] = '.';
-        }
-    }
-}
-
-void mostrarTablero (Tablero* tablero){
-    for(int i = 0; i<tablero->filas; i++){
-        for(int j = 0; i<tablero->columnas; j++){
-            printf("%c", tablero->celdas[i][j]);
-        }
-    }
-}
 
 //----------------------------------------------------------------
 int main(){
@@ -46,7 +21,7 @@ int main(){
         filas = 5;
         turnos = 60;
         pedidos = 3;
-    }else if (dificultad == 1){
+    }else if (dificultad == 2){
         filas = 8;
         turnos = 50;
         pedidos = 4;
@@ -62,4 +37,3 @@ int main(){
     return 0;
 }
 
-#endif

@@ -12,7 +12,7 @@ typedef struct {
     int turnos_inhabilitada ; // Para estaciones apagadas conextintor
 } Estacion ;
 
-typedef struct {
+typedef struct Pedido{
     char nombre_plato [50]; // Ej : McCharly
     Ingrediente ** ingredientes_requeridos ; // Lista de ingredientes necesarios
     int completado ; // 1 si entregado , 0 si pendiente

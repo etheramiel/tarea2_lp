@@ -1,3 +1,6 @@
+#ifndef INVENTARIO_H
+#define INVENTARIO_H
+
 void crearInventario () ;
 void agregarIngrediente () ;
 void eliminarIngrediente () ;
@@ -11,3 +14,4 @@ typedef struct {
     int prob_incendio ; // Probabilidad de causar incendio .
 } Ingrediente ;
 
+#endif
