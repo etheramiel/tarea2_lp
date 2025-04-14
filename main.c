@@ -1,3 +1,6 @@
+#ifndef MAIN_C
+#define MAIN_C
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -8,7 +11,7 @@
 
 
 //tablero.c
-void inicializarTablero ( Tablero * tablero , int filas , int columnas){
+void inicializarTablero ( Tablero* tablero , int filas , int columnas){
     tablero->filas = filas;
     tablero->columnas = columnas;
 
@@ -58,3 +61,5 @@ int main(){
 
     return 0;
 }
+
+#endif
