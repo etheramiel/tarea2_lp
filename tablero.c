@@ -1,4 +1,8 @@
+#include <stdlib.h> 
+#include <stdio.h>
+
 #include "tablero.h"
+
 
 void inicializarTablero ( Tablero* tablero , int filas , int columnas){
     tablero->filas = filas;
@@ -20,5 +24,6 @@ void mostrarTablero (Tablero* tablero){
         for(int j = 0; j<tablero->columnas; j++){
             printf("%s ", (char*)tablero->celdas[i][j]);
         }
+        printf("\n");
     }
 }

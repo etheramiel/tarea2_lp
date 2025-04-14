@@ -3,7 +3,6 @@
 
 #include "tablero.h"
 #include "inventario.h"
-#include "main.h"
 
 typedef struct {
     char simbolo ; // ’T ’ ( Tabla ) , ’C ’ ( Cocina ) , ’A ’( Almacen ) , ’E ’ ( Extintor )
@@ -12,7 +11,7 @@ typedef struct {
     int turnos_inhabilitada ; // Para estaciones apagadas conextintor
 } Estacion ;
 
-typedef struct Pedido{
+typedef struct {
     char nombre_plato [50]; // Ej : McCharly
     Ingrediente ** ingredientes_requeridos ; // Lista de ingredientes necesarios
     int completado ; // 1 si entregado , 0 si pendiente

@@ -7,14 +7,10 @@
 #include "main.h"
 
 
-//tablero.c
-
-//----------------------------------------------------------------
 int main(){
     printf("Seleccione dificultad:\n1.Facil\n2.Medio\n3.Dificil\n");
     int dificultad, filas, turnos, pedidos;
     scanf("%d", &dificultad);
-    printf("%d\n", dificultad);
     Tablero* tablero = malloc(sizeof(Tablero));
 
     if(dificultad == 1){

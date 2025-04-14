@@ -1,6 +1,7 @@
 #ifndef TABLERO_H
 #define TABLERO_H
 
+
 typedef struct {
     void *** celdas ; // Matriz 2 D de elementos ( puntero triple)
     int filas ;
