@@ -2,10 +2,10 @@
 #include <stdlib.h>
 
 int main(){
-    int *a = (int *)malloc(sizeof(int));
-    *a = 2;
-    printf("%d", *a);
-    free(a);
+    printf("Seleccione dificultad:\n1.Facil\n2.Medio\n3.Dificil");
+    int dificultad;
+    scanf("%d", dificultad);
+    printf("%d", dificultad);
+    
     return 0;
-
 }
