@@ -2,6 +2,7 @@
 #include <stdio.h>
 
 #include "tablero.h"
+#include "acciones.h"
 
 
 void inicializarTablero ( Tablero* tablero , int filas , int columnas){
@@ -17,7 +18,30 @@ void inicializarTablero ( Tablero* tablero , int filas , int columnas){
             tablero->celdas[i][j] = NULL;
         }
     }
+    generarEstacionAleatoria(tablero, 'T', cortar);
+    generarEstacionAleatoria(tablero, 'E', apagar_incendio);
+    generarEstacionAleatoria(tablero, 'A', buscar_ingrediente);
+    generarEstacionAleatoria(tablero, 'C', cocinar);
+    
 }
+
+void generarEstacionAleatoria(Tablero* tablero, char simbolo, void (*accion)(void*, int, int)){
+    int x, y;
+
+    do{
+        x = rand() % tablero->filas;
+        y = rand() % tablero->columnas;
+    }while(tablero->celdas[x][y] != NULL);
+
+    Estacion* estacion = malloc(sizeof(Estacion));
+    estacion->simbolo = simbolo;
+    estacion->accion = accion;
+    estacion->en_llamas = 0;
+    estacion->turnos_inhabilitada = 0;
+    
+    tablero->celdas[x][y] = estacion;
+}
+
 
 
 void mostrarTablero (Tablero* tablero){
@@ -25,6 +49,10 @@ void mostrarTablero (Tablero* tablero){
         for(int j = 0; j<tablero->columnas; j++){
             if(tablero->celdas[i][j] == NULL){
                 printf(". ");
+            }
+            else{
+                Estacion* e = (Estacion*)tablero->celdas[i][j];
+                printf("%c ", e->simbolo);
             }
         }
         printf("\n");

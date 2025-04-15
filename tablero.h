@@ -8,9 +8,11 @@ typedef struct {
     int columnas ;
 } Tablero ;
 
-void inicializarTablero ( Tablero * tablero , int filas , int columnas);
-void generarEstacionAleatoria(Tabero *tablero, char simbolo, )
-void mostrarTablero (Tablero* tablero) ;
-void actualizarCelda ( Tablero * tablero , int x , int y , void *elemento );
+void inicializarTablero (Tablero * tablero , int filas , int columnas);
+void mostrarTablero (Tablero* tablero);
+void actualizarCelda (Tablero * tablero , int x , int y , void *elemento );
+
+void generarEstacionAleatoria(Tablero* tablero, char simbolo, void (*accion)(void*, int, int));
+
 
 #endif
