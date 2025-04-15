@@ -14,15 +14,18 @@ void inicializarTablero ( Tablero* tablero , int filas , int columnas){
         tablero->celdas[i] = (void**)malloc(columnas * sizeof(void*));
         
         for(int j = 0; j<columnas; j++){
-            tablero->celdas[i][j] = ".";
+            tablero->celdas[i][j] = NULL;
         }
     }
 }
 
+
 void mostrarTablero (Tablero* tablero){
     for(int i = 0; i<tablero->filas; i++){
         for(int j = 0; j<tablero->columnas; j++){
-            printf("%s ", (char*)tablero->celdas[i][j]);
+            if(tablero->celdas[i][j] == NULL){
+                printf(". ");
+            }
         }
         printf("\n");
     }

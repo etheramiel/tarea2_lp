@@ -9,6 +9,7 @@ typedef struct {
 } Tablero ;
 
 void inicializarTablero ( Tablero * tablero , int filas , int columnas);
+void generarEstacionAleatoria(Tabero *tablero, char simbolo, )
 void mostrarTablero (Tablero* tablero) ;
 void actualizarCelda ( Tablero * tablero , int x , int y , void *elemento );
 

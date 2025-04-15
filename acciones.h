@@ -23,5 +23,5 @@ void buscar_ingrediente ( void * contexto , int x , int y ) ; // Almacen
 void apagar_incendio ( void * contexto , int x , int y ) ; // Extintor
 void entregar_pedido ( void * contexto ) ;
 
-
+    
 #endif
