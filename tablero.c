@@ -3,7 +3,9 @@
 
 #include "tablero.h"
 #include "acciones.h"
+#include "main.h"
 
+Jugador* jugador;
 
 void inicializarTablero ( Tablero* tablero , int filas , int columnas){
     tablero->filas = filas;
@@ -47,7 +49,10 @@ void generarEstacionAleatoria(Tablero* tablero, char simbolo, void (*accion)(voi
 void mostrarTablero (Tablero* tablero){
     for(int i = 0; i<tablero->filas; i++){
         for(int j = 0; j<tablero->columnas; j++){
-            if(tablero->celdas[i][j] == NULL){
+            if(i == jugador->x && j == jugador->y){
+                printf("O ");
+            }
+            else if(tablero->celdas[i][j] == NULL){
                 printf(". ");
             }
             else{
