@@ -27,6 +27,11 @@ void inicializarTablero ( Tablero* tablero , int filas , int columnas){
     
 }
 
+void actualizarCelda (Tablero * tablero , int x , int y , void *elemento ){
+    tablero->celdas[x][y] = elemento;
+}
+
+
 void generarEstacionAleatoria(Tablero* tablero, char simbolo, void (*accion)(void*, int, int)){
     int x, y;
 
@@ -41,7 +46,8 @@ void generarEstacionAleatoria(Tablero* tablero, char simbolo, void (*accion)(voi
     estacion->en_llamas = 0;
     estacion->turnos_inhabilitada = 0;
     
-    tablero->celdas[x][y] = estacion;
+    actualizarCelda(tablero, x, y, estacion);
+    
 }
 
 
