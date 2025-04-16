@@ -28,7 +28,14 @@ void inicializarTablero ( Tablero* tablero , int filas , int columnas){
 }
 
 void actualizarCelda (Tablero * tablero , int x , int y , void *elemento ){
-    tablero->celdas[x][y] = elemento;
+    if(tablero->celdas[x][y] == NULL){
+        tablero->celdas[x][y] = elemento;
+    }
+    else if(elemento == NULL){
+        jugador->x = x;
+        jugador->y = y;
+    }
+
 }
 
 
@@ -55,8 +62,11 @@ void generarEstacionAleatoria(Tablero* tablero, char simbolo, void (*accion)(voi
 void mostrarTablero (Tablero* tablero){
     for(int i = 0; i<tablero->filas; i++){
         for(int j = 0; j<tablero->columnas; j++){
-            if(i == jugador->x && j == jugador->y){
+            if(tablero->celdas[i][j] == NULL && (i == jugador->y && j == jugador->x)){
                 printf("O ");
+            }
+            else if(tablero->celdas[i][j] != NULL && (i == jugador->y && j == jugador->x)){
+                printf("V ");
             }
             else if(tablero->celdas[i][j] == NULL){
                 printf(". ");
@@ -67,5 +77,33 @@ void mostrarTablero (Tablero* tablero){
             }
         }
         printf("\n");
+    }
+}
+
+
+void moverJugador(Tablero* tablero, int casillas, char direccion){
+    if(direccion == 'W'){
+        jugador->y = jugador->y-casillas;
+        if(jugador->y < 0){
+            jugador->y = 0;
+        } 
+    }
+    else if(direccion == 'S'){
+        jugador->y = jugador->y+casillas;
+        if(jugador->y > tablero->filas){
+            jugador->y = tablero->filas - 1;
+        } 
+    }
+    else if(direccion == 'D'){
+        jugador->x = jugador->x+casillas;
+        if(jugador->x > tablero->columnas){
+            jugador->x = tablero->columnas - 1;
+        }
+    }
+    else if(direccion == 'A'){
+        jugador->x = jugador->x-casillas;
+        if(jugador->x < 0){
+            jugador->x = 0;
+        } 
     }
 }

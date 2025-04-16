@@ -12,6 +12,8 @@ void inicializarTablero (Tablero * tablero , int filas , int columnas);
 void mostrarTablero (Tablero* tablero);
 void actualizarCelda (Tablero * tablero , int x , int y , void *elemento );
 
+
+void moverJugador(Tablero* tablero, int casillas, char direccion);
 void generarEstacionAleatoria(Tablero* tablero, char simbolo, void (*accion)(void*, int, int));
 
 
