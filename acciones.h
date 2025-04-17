@@ -4,6 +4,7 @@
 #include "tablero.h"
 #include "inventario.h"
 
+
 typedef struct {
     char simbolo ; // ’T ’ ( Tabla ) , ’C ’ ( Cocina ) , ’A ’( Almacen ) , ’E ’ ( Extintor )
     void (* accion ) ( void * , int , int ) ; // Puntero a funcion ( ej :cocinar , cortar )

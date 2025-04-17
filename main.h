@@ -2,7 +2,6 @@
 #define MAIN_H
 
 #include "tablero.h"
-#include "inventario.h"
 #include "acciones.h"
 
 

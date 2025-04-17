@@ -7,15 +7,18 @@
 #include "main.h"
 
 extern Jugador* jugador;
+Juego* juego;
+
 
 int main(){
+    juego = malloc(sizeof(Juego));
+
     printf("Seleccione dificultad:\n1.Facil\n2.Medio\n3.Dificil\n");
     int dificultad, filas, columnas, turnos, pedidos;
     scanf("%d", &dificultad);
     Tablero* tablero = malloc(sizeof(Tablero));
-    Juego* juego = malloc(sizeof(Juego));
     juego->tablero = tablero;
-    // juego->inventario = crearInventario();
+    crearInventario();
 
 
     if(dificultad == 1){
@@ -42,7 +45,7 @@ int main(){
     do {
         jugador->x = rand() % filas;
         jugador->y = rand() % columnas;
-    } while (tablero->celdas[jugador->x][jugador->y] != NULL);
+    } while (tablero->celdas[jugador->y][jugador->x] != NULL);
 
     mostrarTablero(tablero);
 
@@ -60,6 +63,13 @@ int main(){
             moverJugador(tablero, casillas, direccion);
             mostrarTablero(tablero);
         }else if(accion == '2'){
+            if(tablero->celdas[jugador->y][jugador->x] != NULL){
+                Estacion* e = (Estacion*)tablero->celdas[jugador->y][jugador->x];
+                e->accion(juego, jugador->x, jugador->y);
+            }
+            else{
+                printf("No se encuentra en una casilla de accion\n");
+            }
 
         }else if(accion == '3'){
 
@@ -68,8 +78,13 @@ int main(){
         }else if(accion == '5'){
             break;
         }
-        pedidos--;
+        juego->turnos_restantes--;
     }
+    cerrarTablero(tablero);
+    liberarInventario();
+    free(jugador);
+    free(juego);
+    free(tablero);
     return 0;
 }
 

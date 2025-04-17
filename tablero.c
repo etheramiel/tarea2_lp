@@ -1,5 +1,6 @@
 #include <stdlib.h> 
 #include <stdio.h>
+#include <time.h>
 
 #include "tablero.h"
 #include "acciones.h"
@@ -8,6 +9,7 @@
 Jugador* jugador;
 
 void inicializarTablero ( Tablero* tablero , int filas , int columnas){
+    srand(time(NULL));
     tablero->filas = filas;
     tablero->columnas = columnas;
 
@@ -31,11 +33,10 @@ void actualizarCelda (Tablero * tablero , int x , int y , void *elemento ){
     if(tablero->celdas[x][y] == NULL){
         tablero->celdas[x][y] = elemento;
     }
-    else if(elemento == NULL){
+    if(elemento == NULL){
         jugador->x = x;
         jugador->y = y;
     }
-
 }
 
 
@@ -106,4 +107,16 @@ void moverJugador(Tablero* tablero, int casillas, char direccion){
             jugador->x = 0;
         } 
     }
+}
+
+void cerrarTablero(Tablero* tablero) {
+    for (int i = 0; i < tablero->filas; i++) {
+        for (int j = 0; j < tablero->columnas; j++) {
+            if (tablero->celdas[i][j] != NULL) {
+                free(tablero->celdas[i][j]);
+            }
+        }
+        free(tablero->celdas[i]); 
+    }
+    free(tablero->celdas); 
 }

@@ -1,10 +1,16 @@
 #ifndef INVENTARIO_H
 #define INVENTARIO_H
 
+
+
+
+
+
 void crearInventario () ;
 void agregarIngrediente () ;
 void eliminarIngrediente () ;
 void verInventario () ;
+void liberarInventario();
 
 typedef struct {
     char nombre [30]; // Ej : " pan " , " pollo "
