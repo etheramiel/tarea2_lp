@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <ctype.h> 
 
 #include "acciones.h"
 #include "tablero.h"
@@ -14,7 +15,7 @@ int main(){
     juego = malloc(sizeof(Juego));
 
     printf("Seleccione dificultad:\n1.Facil\n2.Medio\n3.Dificil\n");
-    int dificultad, filas, columnas, turnos, pedidos;
+    int dificultad, filas, columnas, turnos, cant_pedidos;
     scanf("%d", &dificultad);
     Tablero* tablero = malloc(sizeof(Tablero));
     juego->tablero = tablero;
@@ -23,17 +24,17 @@ int main(){
 
     if(dificultad == 1){
         filas = columnas = 5;
-        pedidos = 3;
+        cant_pedidos = 3;
         juego->turnos_restantes = 60;
         juego->dificultad = 1;
     }else if (dificultad == 2){
         filas = columnas = 10;
-        pedidos = 4;
+        cant_pedidos = 4;
         juego->turnos_restantes = 60;
         juego->dificultad = 2;
     }else{
         filas = columnas = 10;
-        pedidos = 5;
+        cant_pedidos = 5;
         juego->turnos_restantes = 45;
         juego->dificultad = 3;
     }
@@ -47,9 +48,10 @@ int main(){
         jugador->y = rand() % columnas;
     } while (tablero->celdas[jugador->y][jugador->x] != NULL);
 
+    printf("Turnos restantes: %d\n", juego->turnos_restantes);
     mostrarTablero(tablero);
 
-    while(juego->turnos_restantes > 0 && pedidos > 0){
+    while(juego->turnos_restantes > 0 && cant_pedidos > 0){
         char accion;
         int casillas;
         printf("Que desea hacer:\n1.Moverse\n2.Accion\n3.Ver Inventario\n4.Entregar Plato\n5.Salir del juego\n");
@@ -58,14 +60,20 @@ int main(){
             char direccion;
             printf("Ingrese direccion (W, A, S, D): ");
             scanf(" %c", &direccion);
+            direccion = toupper(direccion);
             printf("Ingrese cantidad de casillas: ");
             scanf(" %d", &casillas);
             moverJugador(tablero, casillas, direccion);
+            juego->turnos_restantes--;
+            printf("Turnos restantes: %d\n", juego->turnos_restantes);
             mostrarTablero(tablero);
         }else if(accion == '2'){
             if(tablero->celdas[jugador->y][jugador->x] != NULL){
                 Estacion* e = (Estacion*)tablero->celdas[jugador->y][jugador->x];
                 e->accion(juego, jugador->x, jugador->y);
+                juego->turnos_restantes--;
+                printf("Turnos restantes: %d\n", juego->turnos_restantes);
+                mostrarTablero(tablero);
             }
             else{
                 printf("No se encuentra en una casilla de accion\n");
