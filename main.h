@@ -2,6 +2,7 @@
 #define MAIN_H
 
 #include "tablero.h"
+#include "inventario.h"
 #include "acciones.h"
 
 
@@ -12,17 +13,19 @@ typedef struct {
     Pedido * pedidos ;
     int turnos_restantes ;
     int dificultad ;
-} Juego ;
+} Juego;
 
 
 typedef struct {
     int x ; // Posicion X en el tablero
     int y ; // Posicion Y en el tablero
     int en_llamas ; // 1 si el jugador esta en llamas ( por atravesar estacion incendiada )
-} Jugador ;
+} Jugador;
 
 void crearMenu();
 void mostrarMenu();
+void cerrarMenu();
+void mostrarPedidoActual(Pedido* pedido, int cant_ingredientes);
 
 #endif
 

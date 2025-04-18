@@ -14,6 +14,18 @@ extern Jugador* jugador;
 Juego* juego;
 Pedido platos_base[CANTIDAD_PLATOS];
 
+void mostrarPedidoActual(Pedido* pedido, int cant_ingredientes) {
+    printf("'%s': [", pedido->nombre_plato);
+    for (int i = 0; i < cant_ingredientes; i++) {
+        printf("%s", pedido->ingredientes_requeridos[i]->nombre);
+        if (i != cant_ingredientes - 1) {
+            printf(", ");
+        }
+    }
+    printf("]. \n");
+}
+
+
 void crearMenu(){ // "0 = crudo " , "1 = cortado " , "2 = frito" , "3 = cocinado", "4 = cortado y frito"
 
     //Crear McChcarly (papas fritas(y coratdas), pollo frito)
@@ -82,7 +94,41 @@ void crearMenu(){ // "0 = crudo " , "1 = cortado " , "2 = frito" , "3 = cocinado
     }
 
 }
+//2, 3, 2, 4, 2
+void cerrarMenu(){
 
+    for(int i = 0; i<2; i++){
+        
+        free(platos_base[0].ingredientes_requeridos[i]);
+        
+    }free(platos_base[0].ingredientes_requeridos);
+
+    for(int i = 0; i<3; i++){
+        
+        free(platos_base[1].ingredientes_requeridos[i]);
+        
+    }free(platos_base[1].ingredientes_requeridos);
+
+    for(int i = 0; i<2; i++){
+        
+        free(platos_base[2].ingredientes_requeridos[i]);
+        
+    }free(platos_base[2].ingredientes_requeridos);
+    
+    for(int i = 0; i<4; i++){
+        
+        free(platos_base[3].ingredientes_requeridos[i]);
+        
+    }free(platos_base[3].ingredientes_requeridos);
+
+    for(int i = 0; i<2; i++){
+        
+        free(platos_base[4].ingredientes_requeridos[i]);
+        
+    }free(platos_base[4].ingredientes_requeridos);
+
+
+}
 
 // void mostrarMenu() {
 //     int cantidad_ingredientes[CANTIDAD_PLATOS] = {2, 3, 2, 4, 2};
@@ -103,9 +149,10 @@ void crearMenu(){ // "0 = crudo " , "1 = cortado " , "2 = frito" , "3 = cocinado
 
 int main(){
     juego = malloc(sizeof(Juego));
+    int elegido;
 
     printf("Seleccione dificultad:\n1.Facil\n2.Medio\n3.Dificil\n");
-    int dificultad, filas, columnas, turnos, cant_pedidos;
+    int dificultad, filas, columnas, cant_pedidos;
     scanf("%d", &dificultad);
     Tablero* tablero = malloc(sizeof(Tablero));
     juego->tablero = tablero;
@@ -113,7 +160,17 @@ int main(){
     crearMenu();
     // mostrarMenu();
 
+    // Ingrediente* i = malloc(sizeof(Ingrediente));
+    // strcpy(i->nombre, "pollo");
+    // i->estado = 0;
+    // i->es_extintor = 0;
+    // juego->inventario[0] = i;
 
+    // Ingrediente* i2 = malloc(sizeof(Ingrediente));
+    // strcpy(i2->nombre, "papa");
+    // i2->estado = 0;
+    // i2->es_extintor = 0;
+    // juego->inventario[1] = i2;
 
 
     if(dificultad == 1){
@@ -133,6 +190,30 @@ int main(){
         juego->dificultad = 3;
     }
 
+    juego->pedidos = malloc(cant_pedidos * sizeof(Pedido));
+
+    int cantidad_ingredientes_por_plato[CANTIDAD_PLATOS] = {2, 3, 2, 4, 2};
+
+    for(int i = 0; i < cant_pedidos; i++){
+
+        int elegido = rand() % CANTIDAD_PLATOS;
+    
+        Pedido* base = &platos_base[elegido];
+        juego->pedidos[i].completado = 0;
+        strcpy(juego->pedidos[i].nombre_plato, base->nombre_plato);
+    
+        int j = cantidad_ingredientes_por_plato[elegido];
+        juego->pedidos[i].ingredientes_requeridos = malloc(j * sizeof(Ingrediente*));
+    
+        for(int k = 0; k < j; k++){
+            juego->pedidos[i].ingredientes_requeridos[k] = malloc(sizeof(Ingrediente));
+            strcpy(juego->pedidos[i].ingredientes_requeridos[k]->nombre, base->ingredientes_requeridos[k]->nombre);
+            juego->pedidos[i].ingredientes_requeridos[k]->estado = base->ingredientes_requeridos[k]->estado;
+        }
+    }
+
+
+    
     inicializarTablero(tablero, filas, columnas);
 
     jugador = malloc(sizeof(Jugador));
@@ -142,12 +223,44 @@ int main(){
         jugador->y = rand() % columnas;
     } while (tablero->celdas[jugador->y][jugador->x] != NULL);
 
-    printf("Turnos restantes: %d\n", juego->turnos_restantes);
-    mostrarTablero(tablero);
+    // printf("Turnos restantes: %d\n", juego->turnos_restantes);
+    // mostrarTablero(tablero);
 
     while(juego->turnos_restantes > 0 && cant_pedidos > 0){
         char accion;
         int casillas;
+
+        int pedido_actual = -1;
+        for (int i = 0; i < cant_pedidos; i++) {
+            if (juego->pedidos[i].completado == 0) {
+                pedido_actual = i;
+                break;
+            }
+        }
+
+        if (pedido_actual != -1) {
+            int cantidad_ingredientes_por_plato[CANTIDAD_PLATOS] = {2, 3, 2, 4, 2};
+
+            Pedido* pedido = &juego->pedidos[pedido_actual];
+
+            int index_plato = -1;
+            for (int i = 0; i < CANTIDAD_PLATOS; i++) {
+                if (strcmp(platos_base[i].nombre_plato, pedido->nombre_plato) == 0) {
+                    index_plato = i;
+                    break;
+                }
+            }
+
+            if (index_plato != -1) {
+                mostrarPedidoActual(pedido, cantidad_ingredientes_por_plato[index_plato]);
+            }
+        }
+        printf("Turnos restantes: %d\n", juego->turnos_restantes);
+        mostrarTablero(tablero);
+
+
+
+
         printf("Que desea hacer:\n1.Moverse\n2.Accion\n3.Ver Inventario\n4.Entregar Plato\n5.Salir del juego\n");
         scanf(" %c", &accion);
 
@@ -160,16 +273,17 @@ int main(){
             scanf(" %d", &casillas);
             moverJugador(tablero, casillas, direccion);
             juego->turnos_restantes--;
+            printf("===============================================\n");
             printf("Turnos restantes: %d\n", juego->turnos_restantes);
-            mostrarTablero(tablero);
+            // mostrarTablero(tablero);
 
         }else if(accion == '2'){
             if(tablero->celdas[jugador->y][jugador->x] != NULL){
                 Estacion* e = (Estacion*)tablero->celdas[jugador->y][jugador->x];
                 e->accion(juego, jugador->x, jugador->y);
-                juego->turnos_restantes--;
+                printf("===============================================\n");
                 printf("Turnos restantes: %d\n", juego->turnos_restantes);
-                mostrarTablero(tablero);
+                // mostrarTablero(tablero);
             }
 
             else{
@@ -183,13 +297,23 @@ int main(){
         }else if(accion == '5'){
             break;
         }
-        juego->turnos_restantes--;
+
     }
     cerrarTablero(tablero);
     liberarInventario();
     free(jugador);
     free(juego);
     free(tablero);
+    cerrarMenu();
+    //Hacer funcion
+    for (int i = 0; i < cant_pedidos; i++) {
+        int j = cantidad_ingredientes_por_plato[elegido]; // o guardalo en una lista paralela
+        for (int k = 0; k < j; k++) {
+            free(juego->pedidos[i].ingredientes_requeridos[k]);
+        }
+        free(juego->pedidos[i].ingredientes_requeridos);
+    }
+    free(juego->pedidos);
     return 0;
 }
 
