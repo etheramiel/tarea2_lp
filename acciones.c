@@ -1,12 +1,16 @@
 #include <stdio.h>
 #include "acciones.h"
 
-void cortar(void* contexto, int x, int y) {
-    printf("Acción: cortar en (%d, %d)\n", x, y);
-}
+
 
 void cocinar(void* contexto, int x, int y) {
-    printf("Acción: cocinar en (%d, %d)\n", x, y);
+    Tablero* tablero = juego->tablero;
+
+    printf("Ingredientes en inventario")
+}
+
+void cortar(void* contexto, int x, int y) {
+    printf("Acción: cortar en (%d, %d)\n", x, y);
 }
 
 void buscar_ingrediente(void* contexto, int x, int y) {

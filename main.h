@@ -21,6 +21,8 @@ typedef struct {
     int en_llamas ; // 1 si el jugador esta en llamas ( por atravesar estacion incendiada )
 } Jugador ;
 
+void crearMenu();
+void mostrarMenu();
 
 #endif
 
