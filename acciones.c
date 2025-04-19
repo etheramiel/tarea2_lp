@@ -12,6 +12,13 @@ extern Juego* juego;
 void cocinar(void* contexto, int x, int y) {
     Tablero* tablero = juego->tablero;
 
+    Estacion* est = (Estacion*)tablero->celdas[y][x];
+    if (est->turnos_inhabilitada > 0) {
+        printf("La estación está inhabilitada por %d turnos más.\n", est->turnos_inhabilitada);
+        return;
+    }
+
+
     printf("=====Ingredientes en inventario=====\n");
     int opciones[5];
     int nuevo_x, nuevo_y;
@@ -19,7 +26,7 @@ void cocinar(void* contexto, int x, int y) {
 
     for(int i = 0; i<5; i++){
         Ingrediente *ing = juego->inventario[i];
-        if(ing !=NULL && ing->estado == 0){
+        if(ing !=NULL && (ing->estado == 0 || ing->estado == 1) ){
             printf("%d. %s\n", total_opciones + 1, ing->nombre);
             opciones[total_opciones] = i;
             total_opciones++;
@@ -58,10 +65,12 @@ void cocinar(void* contexto, int x, int y) {
         ing->estado = 3; //cocinado
     }
     else if(strcmp(ing->nombre, "lechuga") == 0){
-        printf("Lechuga no se puede cocinar");
+        printf("Lechuga no se puede cocinar\n");
+        return;
     }
     else if(strcmp(ing->nombre, "tomate") == 0){
-        printf("Tomate no se puede cocinar");
+        printf("Tomate no se puede cocinar\n");
+        return;
     }
     else if(strcmp(ing->nombre, "papa") == 0){
 
@@ -77,7 +86,8 @@ void cocinar(void* contexto, int x, int y) {
     printf("Cocinando %s por %d turnos...\n", ing->nombre, ing->turnos_elaboracion);
     juego->turnos_restantes -= ing->turnos_elaboracion;
 
-    int r = rand() % 100;
+    // int r = rand() % 100;
+    int r = 1;
     if(r<ing->prob_incendio){
         printf("¡INCENDIO! El ingrediente se ha quemado y la estación está en llamas.\n");
 
@@ -86,6 +96,7 @@ void cocinar(void* contexto, int x, int y) {
 
         Estacion* est = (Estacion*)tablero->celdas[y][x];
         est->simbolo = 'F';
+        est->accion = apagar_incendio; 
 
         do {
             nuevo_x = rand() % tablero->columnas;
@@ -118,7 +129,7 @@ void buscar_ingrediente(void* contexto, int x, int y) {
     scanf("%d", &respuesta);
 
     if(respuesta != 1){
-        printf("%s descartado", nombre_ing);
+        printf("%s descartado\n", nombre_ing);
         return;
     }
 
@@ -131,7 +142,7 @@ void buscar_ingrediente(void* contexto, int x, int y) {
     }
 
     if(espacio_vacio == -1){
-        printf("Inventario lleno. No se pudo agregar%s\n", nombre_ing);
+        printf("Inventario lleno. No se pudo agregar %s\n", nombre_ing);
         return;
     }
 
@@ -209,18 +220,26 @@ void cortar(void* contexto, int x, int y) {
 
 
     if(strcmp(ing->nombre, "pollo") == 0){
-        printf("Pollo no se puede cortar");
+        printf("Pollo no se puede cortar\n");
+        return;
     }
     else if(strcmp(ing->nombre, "hamburguesa") == 0){
-        printf("Hamburguesa no se puede cortar");
+        printf("Hamburguesa no se puede cortar\n");
+        return;
     }
     else if(strcmp(ing->nombre, "arroz") == 0){
-        printf("Arroz no se puede cortar");
+        printf("Arroz no se puede cortar\n");
+        return;
     }
     else if(strcmp(ing->nombre, "pasta") == 0){
-        printf("Pasta no se puede cortar");
+        printf("Pasta no se puede cortar\n");
+        return;
     }
-    else if(strcmp(ing->nombre, "lechuga") == 0){
+    else if(strcmp(ing->nombre, "pan") == 0){
+        printf("Pan no se puede cortar\n");
+        return;
+    }
+    else if(strcmp(ing->nombre, "lechuga\n") == 0){
        ing->estado = 1;
     }
     else if(strcmp(ing->nombre, "tomate") == 0){
@@ -232,13 +251,162 @@ void cortar(void* contexto, int x, int y) {
 
     printf("Cortando %s por %d turnos...\n", ing->nombre, ing->turnos_elaboracion);
     juego->turnos_restantes -= ing->turnos_elaboracion;
-    printf("Ingrediente cortado con exito");
+    printf("Ingrediente cortado con exito\n");
+}
+
+
+void entregar_pedido(void* contexto) {
+    Juego* juego = (Juego*)contexto;
+
+    int pedido_index = -1;
+    int cant_pedidos;
+    if (juego->dificultad == 1) {
+        cant_pedidos = 3;
+    } else if (juego->dificultad == 2) {
+        cant_pedidos = 4;
+    } else {
+        cant_pedidos = 5;
+    }
+
+    for (int i = 0; i < cant_pedidos; i++) {
+        if (juego->pedidos[i].completado == 0) {
+            pedido_index = i;
+            break;
+        }
+    }
+
+    if (pedido_index == -1) {
+        printf("No hay pedidos pendientes.\n");
+        return;
+    }
+
+    Pedido* pedido = &juego->pedidos[pedido_index];
+    int usados[5] = {0, 0, 0, 0, 0};
+
+    for (int i = 0; pedido->ingredientes_requeridos[i] != NULL; i++) {
+        Ingrediente* req = pedido->ingredientes_requeridos[i];
+        int encontrado = 0;
+
+        for (int j = 0; j < 5; j++) {
+            Ingrediente* ing = juego->inventario[j];
+            if (ing != NULL && !usados[j]
+                && strcmp(ing->nombre, req->nombre) == 0
+                && ing->estado == req->estado) {
+                usados[j] = 1;
+                encontrado = 1;
+                break;
+            }
+        }
+
+        if (!encontrado) {
+            printf("No tienes todos los ingredientes requeridos para '%s'.\n", pedido->nombre_plato);
+            return;
+        }
+    }
+
+    printf("¡Pedido '%s' entregado exitosamente!\n", pedido->nombre_plato);
+    pedido->completado = 1;
+
+    for (int i = 0; i < 5; i++) {
+        if (usados[i]) {
+            free(juego->inventario[i]);
+            juego->inventario[i] = NULL;
+        }
+    }
 }
 
 void apagar_incendio(void* contexto, int x, int y) {
-    printf("Acción: apagar incendio en (%d, %d)\n", x, y);
+    Juego* juego = (Juego*)contexto;
+    Tablero* tablero = juego->tablero;
+    Estacion* est = (Estacion*)tablero->celdas[y][x];
+
+    // Revisar si el jugador ya tiene extintor
+    int tiene_extintor = 0;
+    for (int i = 0; i < 5; i++) {
+        if (juego->inventario[i] && juego->inventario[i]->es_extintor == 1) {
+            tiene_extintor = 1;
+            break;
+        }
+    }
+
+    // Caso 1: recolectar extintor desde estación 'E'
+    if (est->simbolo == 'E' && !tiene_extintor) {
+        // Vaciar inventario
+        for (int i = 0; i < 5; i++) {
+            if (juego->inventario[i] != NULL) {
+                free(juego->inventario[i]);
+                juego->inventario[i] = NULL;
+            }
+        }
+
+        // Agregar extintor
+        Ingrediente* extintor = malloc(sizeof(Ingrediente));
+        strcpy(extintor->nombre, "EXTINTOR");
+        extintor->estado = 0;
+        extintor->es_extintor = 1;
+        extintor->turnos_elaboracion = 0;
+        extintor->prob_incendio = 0;
+
+        juego->inventario[0] = extintor;
+
+        // Reubicar estación 'E'
+        int nuevo_x, nuevo_y;
+        do {
+            nuevo_x = rand() % tablero->columnas;
+            nuevo_y = rand() % tablero->filas;
+        } while (tablero->celdas[nuevo_y][nuevo_x] != NULL);
+
+        // Mover la estación
+        tablero->celdas[y][x] = NULL;
+        tablero->celdas[nuevo_y][nuevo_x] = est;
+
+        printf("¡Recolectaste el extintor! Inventario vaciado. Estación de extintor movida a (%d, %d).\n", nuevo_x, nuevo_y);
+        return;
+    }
+
+    // Caso 2: apagar incendio si se está en fuego y se tiene extintor
+    if (est->simbolo == 'F' && tiene_extintor) {
+        est->en_llamas = 0;
+        est->turnos_inhabilitada = 2;
+        est->simbolo = 'C';
+        est->accion = cocinar;
+        printf("¡Incendio apagado exitosamente!\n");
+
+        // Quitar extintor del inventario
+        for (int i = 0; i < 5; i++) {
+            if (juego->inventario[i] && juego->inventario[i]->es_extintor == 1) {
+                free(juego->inventario[i]);
+                juego->inventario[i] = NULL;
+                break;
+            }
+        }
+        return;
+    }
+
+    // Ninguna de las dos condiciones cumplidas
+    if (est->simbolo == 'F') {
+        printf("¡Necesitas un extintor para apagar el incendio!\n");
+    } else {
+        printf("No hay incendio ni extintor en esta estación.\n");
+    }
 }
 
-void entregar_pedido(void* contexto) {
-    printf("Acción: entregar pedido\n");
-}
+
+// void apagar_incendio(void* contexto, int x, int y) {
+//     Juego* juego = (Juego*)contexto;
+//     Tablero* tablero = juego->tablero;
+
+//     Estacion* est = (Estacion*)tablero->celdas[y][x];
+
+//     if (est->en_llamas) {
+//         printf("¡Usaste el extintor y apagaste el incendio!\n");
+//         est->en_llamas = 0;
+//         est->turnos_inhabilitada = 2;
+//         est->simbolo = 'C'; 
+
+//     } else {
+//         printf("No hay incendio en esta estación.\n");
+//     }
+
+
+// }

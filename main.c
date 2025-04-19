@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <ctype.h> 
 #include <string.h>
+#include <time.h>
 
 #include "acciones.h"
 #include "tablero.h"
@@ -148,6 +149,7 @@ void cerrarMenu(){
 // }
 
 int main(){
+    srand(time(NULL)); 
     juego = malloc(sizeof(Juego));
     int elegido;
 
@@ -291,13 +293,28 @@ int main(){
             }
 
         }else if(accion == '3'){
-
+            verInventario();
         }else if(accion == '4'){
-
+            entregar_pedido(juego);
         }else if(accion == '5'){
             break;
         }
-
+        for (int i = 0; i < tablero->filas; i++) {
+            for (int j = 0; j < tablero->columnas; j++) {
+                if (tablero->celdas[i][j] != NULL) {
+                    Estacion* est = (Estacion*)tablero->celdas[i][j];
+        
+                    if (est->turnos_inhabilitada > 0) {
+                        est->turnos_inhabilitada--;
+        
+                        if (est->turnos_inhabilitada == 0 && est->simbolo == 'C') {
+                            printf("La cocina en (%d, %d) ha sido restaurada y vuelve a estar operativa.\n", j, i);
+                            // Nada más que hacer, ya tiene símbolo correcto
+                        }
+                    }
+                }
+            }
+        }
     }
     cerrarTablero(tablero);
     liberarInventario();
@@ -307,13 +324,13 @@ int main(){
     cerrarMenu();
     //Hacer funcion
     for (int i = 0; i < cant_pedidos; i++) {
-        int j = cantidad_ingredientes_por_plato[elegido]; // o guardalo en una lista paralela
-        for (int k = 0; k < j; k++) {
-            free(juego->pedidos[i].ingredientes_requeridos[k]);
+        Pedido* p = &juego->pedidos[i];
+        for (int j = 0; p->ingredientes_requeridos[j] != NULL; j++) {
+            free(p->ingredientes_requeridos[j]);
         }
-        free(juego->pedidos[i].ingredientes_requeridos);
+        free(p->ingredientes_requeridos);
     }
     free(juego->pedidos);
-    return 0;
+    return 0;   
 }
 
